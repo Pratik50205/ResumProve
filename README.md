@@ -8,11 +8,29 @@ ResumProve is a production-grade, AI-powered career intelligence platform design
 
 ## 🗺️ Development Journey & Phase Roadmap
 
-For a detailed breakdown of all 13 development phases, live progress status, and deliverables, see **[PHASES.md](file:///c:/Pratik/ResumProve/PHASES.md)**.
+### 📊 Project Progress
 
-* **Phase 1**: Foundation, Design System & Landing Page (✅ **Completed**)
-* **Phase 2**: Resume Engine & Split-Screen Live Builder (⏳ **Next Up**)
-* **Phase 3–13**: Templates, Document Intelligence, Supabase Cloud, AI Fact-Lock, Proof Score, and ATS Export.
+```
+[████████░░░░░░░░░░░░░░░░░░░░░░░░] 2 / 13 Phases Completed (15%)
+```
+
+| Phase | Description | Status |
+| :--- | :--- | :---: |
+| **Phase 1** | Foundation & Landing Experience | ✅ **Completed** |
+| **Phase 2** | Resume Engine & Live Builder | ✅ **Completed** |
+| **Phase 3** | Template Engine & Print Stylesheet | ⏳ **Next Up** |
+| **Phase 4** | Document Intelligence (PDF/DOCX/TXT Parser) | 📋 Queued |
+| **Phase 5** | Online Backend (Supabase Auth, DB & RLS) | 📋 Queued |
+| **Phase 6** | AI Engine & Fact-Lock™ Guardrails | 📋 Queued |
+| **Phase 7** | Job Intelligence & Ontology Extraction | 📋 Queued |
+| **Phase 8** | Deterministic Compatibility Engine | 📋 Queued |
+| **Phase 9** | The Proof Score™ & Evidence Engine | 📋 Queued |
+| **Phase 10** | AI Optimization & Suggestion Engine | 📋 Queued |
+| **Phase 11** | Career Portfolio Dashboard & Versioning | 📋 Queued |
+| **Phase 12** | ATS Vector PDF & Data Export | 📋 Queued |
+| **Phase 13** | Final Polish, SEO & Security Hardening | 📋 Queued |
+
+For a detailed breakdown of all phases, deliverables, and architecture, see **[PHASES.md](PHASES.md)**.
 
 ---
 
