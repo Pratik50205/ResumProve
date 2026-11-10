@@ -5,7 +5,18 @@
 export async function extractTextFromPdf(buffer: ArrayBuffer | Uint8Array | Buffer): Promise<string> {
   try {
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-    const data = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+    
+    // Ensure data is a pure Uint8Array and strictly NOT a Node.js Buffer instance
+    let data: Uint8Array;
+    if (typeof Buffer !== "undefined" && Buffer.isBuffer(buffer)) {
+      const ab = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+      data = new Uint8Array(ab);
+    } else if (buffer instanceof Uint8Array) {
+      const ab = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+      data = new Uint8Array(ab);
+    } else {
+      data = new Uint8Array(buffer);
+    }
 
     const loadingTask = pdfjs.getDocument({
       data,
@@ -52,10 +63,17 @@ export async function extractTextFromPdf(buffer: ArrayBuffer | Uint8Array | Buff
   }
 }
 
-export async function extractTextFromDocx(buffer: ArrayBuffer | Buffer): Promise<string> {
+export async function extractTextFromDocx(buffer: ArrayBuffer | Buffer | Uint8Array): Promise<string> {
   try {
     const mammoth = await import("mammoth");
-    const nodeBuffer = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
+    let nodeBuffer: Buffer;
+    if (Buffer.isBuffer(buffer)) {
+      nodeBuffer = buffer;
+    } else if (buffer instanceof Uint8Array) {
+      nodeBuffer = Buffer.from(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+    } else {
+      nodeBuffer = Buffer.from(buffer);
+    }
     const result = await mammoth.extractRawText({ buffer: nodeBuffer });
     return result.value || "";
   } catch (err: any) {
@@ -64,7 +82,7 @@ export async function extractTextFromDocx(buffer: ArrayBuffer | Buffer): Promise
   }
 }
 
-export function extractTextFromTxt(buffer: ArrayBuffer | Buffer | string): string {
+export function extractTextFromTxt(buffer: ArrayBuffer | Buffer | Uint8Array | string): string {
   if (typeof buffer === "string") return buffer;
   if (typeof Buffer !== "undefined" && Buffer.isBuffer(buffer)) {
     return buffer.toString("utf-8");
@@ -74,7 +92,7 @@ export function extractTextFromTxt(buffer: ArrayBuffer | Buffer | string): strin
 }
 
 export async function extractRawTextFromFile(
-  buffer: ArrayBuffer | Buffer,
+  buffer: ArrayBuffer | Buffer | Uint8Array,
   format: "pdf" | "docx" | "txt"
 ): Promise<string> {
   switch (format) {

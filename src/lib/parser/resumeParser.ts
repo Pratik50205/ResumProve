@@ -17,7 +17,7 @@ import {
 import { calculateExtractionConfidence } from "./confidenceScorer";
 
 export async function parseResumeDocument(
-  buffer: ArrayBuffer | Buffer,
+  buffer: ArrayBuffer | Buffer | Uint8Array,
   format: "pdf" | "docx" | "txt",
   fileName?: string
 ): Promise<ResumeParseResult> {

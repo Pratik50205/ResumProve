@@ -50,9 +50,10 @@ export async function POST(req: NextRequest) {
     }
 
     const arrayBuffer = await file.arrayBuffer();
-    const nodeBuffer = Buffer.from(arrayBuffer);
+    // For DOCX mammoth needs Buffer; for PDF pdfjs-dist strictly requires a non-Buffer Uint8Array
+    const payload = format === "docx" ? Buffer.from(arrayBuffer) : new Uint8Array(arrayBuffer);
 
-    const parseResult = await parseResumeDocument(nodeBuffer, format, fileName);
+    const parseResult = await parseResumeDocument(payload, format, fileName);
 
     return NextResponse.json({
       success: true,
