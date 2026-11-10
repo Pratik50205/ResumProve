@@ -132,3 +132,15 @@ export interface ExtractedFieldConfidence {
   confidence: number; // 0.0 - 1.0 (e.g. 0.96 for 96%)
   needsVerification?: boolean;
 }
+
+export interface ResumeParseResult {
+  resume: Resume;
+  confidence: {
+    overall: number; // 0 - 100
+    fields: Record<string, ExtractedFieldConfidence>;
+  };
+  rawText: string;
+  detectedSections: string[];
+  sourceFormat: "pdf" | "docx" | "txt";
+  fileName?: string;
+}

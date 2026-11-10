@@ -27,6 +27,7 @@ import { SkillsSection } from "@/components/builder/skills-section";
 import { CertsSection } from "@/components/builder/certs-section";
 import { PreviewToolbar } from "@/components/preview/preview-toolbar";
 import { LiveResumePreview } from "@/components/preview/live-resume-preview";
+import { ImportResumeModal } from "@/components/builder/import-resume-modal";
 import { Badge } from "@/components/ui/badge";
 
 type SectionTab = "personal" | "summary" | "experience" | "projects" | "education" | "skills" | "certifications";
@@ -68,6 +69,7 @@ export default function BuilderPage() {
     updateSettings,
     loadSample,
     resetResume,
+    importResume,
     importJSON,
     exportJSON
   } = useResumeState("ml-engineer");
@@ -75,6 +77,7 @@ export default function BuilderPage() {
   const [activeSection, setActiveSection] = useState<SectionTab>("personal");
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
   const [zoom, setZoom] = useState<number>(100);
+  const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
 
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -109,8 +112,17 @@ export default function BuilderPage() {
           onResetResume={resetResume}
           onExportJSON={exportJSON}
           onImportJSON={importJSON}
+          onOpenImportModal={() => setIsImportModalOpen(true)}
         />
       </div>
+
+      {/* Import Resume Modal (PDF / Word / TXT / JSON) */}
+      <ImportResumeModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onApply={(parsedResume, mode) => importResume(parsedResume, mode)}
+        onImportJSON={importJSON}
+      />
 
       {/* Mobile Toggle: Edit vs Preview */}
       <div className="lg:hidden max-w-7xl mx-auto px-4 w-full py-2 no-print">

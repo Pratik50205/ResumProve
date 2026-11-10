@@ -29,6 +29,7 @@ interface BuilderHeaderProps {
   onResetResume: () => void;
   onExportJSON: () => string;
   onImportJSON: (json: string) => boolean;
+  onOpenImportModal?: () => void;
 }
 
 export function BuilderHeader({
@@ -43,7 +44,8 @@ export function BuilderHeader({
   onLoadSample,
   onResetResume,
   onExportJSON,
-  onImportJSON
+  onImportJSON,
+  onOpenImportModal
 }: BuilderHeaderProps) {
   const [sampleMenuOpen, setSampleMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -188,6 +190,19 @@ export function BuilderHeader({
           )}
         </div>
 
+        {/* Import Document Button */}
+        {onOpenImportModal && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onOpenImportModal}
+            className="text-xs gap-1.5 border-brand-500/30 hover:border-brand-500 text-brand-600 dark:text-brand-300"
+          >
+            <Upload className="w-3.5 h-3.5" />
+            <span>Import Document</span>
+          </Button>
+        )}
+
         {/* JSON Portability */}
         <div className="flex items-center gap-1">
           <input
@@ -200,9 +215,9 @@ export function BuilderHeader({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => fileInputRef.current?.click()}
-            title="Import Resume JSON"
-            className="text-xs p-2 text-slate-400 hover:text-white"
+            onClick={() => onOpenImportModal ? onOpenImportModal() : fileInputRef.current?.click()}
+            title="Import Resume (PDF, Word, or JSON)"
+            className="text-xs p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           >
             <Upload className="w-4 h-4" />
           </Button>
@@ -212,7 +227,7 @@ export function BuilderHeader({
             size="sm"
             onClick={handleDownloadJSON}
             title="Download JSON Backup"
-            className="text-xs p-2 text-slate-400 hover:text-white"
+            className="text-xs p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           >
             <Download className="w-4 h-4" />
           </Button>
@@ -222,7 +237,7 @@ export function BuilderHeader({
             size="sm"
             onClick={handleCopyJSON}
             title="Copy JSON to Clipboard"
-            className="text-xs p-2 text-slate-400 hover:text-white"
+            className="text-xs p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
           </Button>

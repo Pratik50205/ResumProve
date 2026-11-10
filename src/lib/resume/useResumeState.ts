@@ -430,6 +430,82 @@ export function useResumeState(initialSampleKey: string = "ml-engineer") {
     commitChange(JSON.parse(JSON.stringify(BLANK_RESUME)));
   }, [commitChange]);
 
+  // Resume Import (Structured Object or JSON)
+  const importResume = useCallback(
+    (newResume: Resume, mode: "replace" | "merge" = "replace") => {
+      if (mode === "replace") {
+        commitChange(newResume);
+        return;
+      }
+      commitChange({
+        ...resume,
+        title: newResume.title || resume.title,
+        personal: {
+          ...resume.personal,
+          fullName: newResume.personal.fullName || resume.personal.fullName,
+          title: newResume.personal.title || resume.personal.title,
+          email: newResume.personal.email || resume.personal.email,
+          phone: newResume.personal.phone || resume.personal.phone,
+          location: newResume.personal.location || resume.personal.location,
+          linkedin: newResume.personal.linkedin || resume.personal.linkedin,
+          github: newResume.personal.github || resume.personal.github,
+          portfolio: newResume.personal.portfolio || resume.personal.portfolio,
+        },
+        summary: newResume.summary || resume.summary,
+        experience:
+          newResume.experience && newResume.experience.length > 0
+            ? newResume.experience
+            : resume.experience,
+        projects:
+          newResume.projects && newResume.projects.length > 0
+            ? newResume.projects
+            : resume.projects,
+        education:
+          newResume.education && newResume.education.length > 0
+            ? newResume.education
+            : resume.education,
+        skills: {
+          programming: Array.from(
+            new Set([...(resume.skills?.programming || []), ...(newResume.skills?.programming || [])])
+          ),
+          aiMl: Array.from(
+            new Set([...(resume.skills?.aiMl || []), ...(newResume.skills?.aiMl || [])])
+          ),
+          dataScience: Array.from(
+            new Set([...(resume.skills?.dataScience || []), ...(newResume.skills?.dataScience || [])])
+          ),
+          frontend: Array.from(
+            new Set([...(resume.skills?.frontend || []), ...(newResume.skills?.frontend || [])])
+          ),
+          backend: Array.from(
+            new Set([...(resume.skills?.backend || []), ...(newResume.skills?.backend || [])])
+          ),
+          databases: Array.from(
+            new Set([...(resume.skills?.databases || []), ...(newResume.skills?.databases || [])])
+          ),
+          cloud: Array.from(
+            new Set([...(resume.skills?.cloud || []), ...(newResume.skills?.cloud || [])])
+          ),
+          devops: Array.from(
+            new Set([...(resume.skills?.devops || []), ...(newResume.skills?.devops || [])])
+          ),
+          tools: Array.from(
+            new Set([...(resume.skills?.tools || []), ...(newResume.skills?.tools || [])])
+          ),
+          softSkills: Array.from(
+            new Set([...(resume.skills?.softSkills || []), ...(newResume.skills?.softSkills || [])])
+          ),
+        },
+        certifications:
+          newResume.certifications && newResume.certifications.length > 0
+            ? newResume.certifications
+            : resume.certifications,
+        updatedAt: new Date().toISOString(),
+      });
+    },
+    [resume, commitChange]
+  );
+
   // JSON Import & Export
   const importJSON = useCallback((jsonString: string): boolean => {
     try {
@@ -485,6 +561,7 @@ export function useResumeState(initialSampleKey: string = "ml-engineer") {
     updateSettings,
     loadSample,
     resetResume,
+    importResume,
     importJSON,
     exportJSON
   };
