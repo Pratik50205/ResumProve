@@ -330,3 +330,4 @@ export function AuthModal({ isOpen, onClose, defaultTab = "signin" }: AuthModalP
     </div>
   );
 }
+

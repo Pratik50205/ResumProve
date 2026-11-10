@@ -69,3 +69,4 @@ export interface ProofAnalysisRow {
   verified_claims: any[];
   created_at: string;
 }
+

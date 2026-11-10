@@ -1,15 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { FileText, Sparkles, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Resume } from "@/types/resume";
+import { SummaryGeneratorModal } from "./ai/summary-generator-modal";
 
 interface SummarySectionProps {
   summary: string;
   onChange: (summary: string) => void;
+  resume?: Resume;
 }
 
-export function SummarySection({ summary, onChange }: SummarySectionProps) {
+export function SummarySection({ summary, onChange, resume }: SummarySectionProps) {
+  const [isGeneratorOpen, setIsGeneratorOpen] = useState(false);
   const charCount = summary ? summary.length : 0;
   const wordCount = summary ? summary.trim().split(/\s+/).filter(Boolean).length : 0;
 
@@ -24,15 +28,29 @@ export function SummarySection({ summary, onChange }: SummarySectionProps) {
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
           <FileText className="w-3.5 h-3.5 text-brand-400" />
           <span>Professional Summary & Focus</span>
         </label>
-        <div className="flex items-center gap-2 text-[11px] text-slate-400">
-          <span>{wordCount} words</span>
-          <span>•</span>
-          <span>{charCount} chars</span>
+        
+        <div className="flex items-center gap-2">
+          {resume && (
+            <button
+              type="button"
+              onClick={() => setIsGeneratorOpen(true)}
+              className="flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-xl bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 border border-brand-500/30 transition-all cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>AI Draft Summary</span>
+            </button>
+          )}
+
+          <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+            <span>{wordCount} words</span>
+            <span>•</span>
+            <span>{charCount} chars</span>
+          </div>
         </div>
       </div>
 
@@ -52,6 +70,16 @@ export function SummarySection({ summary, onChange }: SummarySectionProps) {
           <ShieldCheck className="w-3 h-3" /> Fact-Lock AI Ready
         </Badge>
       </div>
+
+      {resume && (
+        <SummaryGeneratorModal
+          isOpen={isGeneratorOpen}
+          onClose={() => setIsGeneratorOpen(false)}
+          resume={resume}
+          currentSummary={summary}
+          onApply={onChange}
+        />
+      )}
     </div>
   );
 }

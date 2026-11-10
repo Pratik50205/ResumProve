@@ -17,6 +17,7 @@ import {
 import { Experience } from "@/types/resume";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BulletImproverModal } from "./ai/bullet-improver-modal";
 
 interface ExperienceSectionProps {
   experience: Experience[];
@@ -46,6 +47,13 @@ export function ExperienceSection({
     });
     return initial;
   });
+  const [activeBulletModal, setActiveBulletModal] = useState<{
+    expId: string;
+    bulletIndex: number;
+    bulletText: string;
+    role: string;
+    company: string;
+  } | null>(null);
 
   const toggleExpand = (id: string) => {
     setExpandedIds(prev => ({ ...prev, [id]: !prev[id] }));
@@ -242,13 +250,32 @@ export function ExperienceSection({
                               placeholder="Describe your achievement using strong action verbs..."
                               className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none resize-y placeholder:text-slate-600"
                             />
-                            <button
-                              onClick={() => onRemoveBullet(exp.id, bIdx)}
-                              title="Delete Bullet"
-                              className="p-1.5 rounded text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 mt-1"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
+                            <div className="flex items-center gap-1 mt-1 flex-shrink-0">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setActiveBulletModal({
+                                    expId: exp.id,
+                                    bulletIndex: bIdx,
+                                    bulletText: bullet,
+                                    role: exp.title,
+                                    company: exp.company,
+                                  })
+                                }
+                                title="Fact-Lock™ AI Bullet Improver"
+                                className="p-1.5 rounded-lg text-brand-400 hover:text-brand-300 hover:bg-brand-500/10 border border-brand-500/20 transition-colors flex items-center gap-1 text-[11px] font-semibold"
+                              >
+                                <Sparkles className="w-3.5 h-3.5" />
+                                <span className="hidden sm:inline">AI Fix</span>
+                              </button>
+                              <button
+                                onClick={() => onRemoveBullet(exp.id, bIdx)}
+                                title="Delete Bullet"
+                                className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -259,6 +286,22 @@ export function ExperienceSection({
             );
           })}
         </div>
+      )}
+
+      {activeBulletModal && (
+        <BulletImproverModal
+          isOpen={!!activeBulletModal}
+          onClose={() => setActiveBulletModal(null)}
+          originalBullet={activeBulletModal.bulletText}
+          onApply={(improved) => {
+            onUpdateBullet(activeBulletModal.expId, activeBulletModal.bulletIndex, improved);
+            setActiveBulletModal(null);
+          }}
+          context={{
+            role: activeBulletModal.role,
+            company: activeBulletModal.company,
+          }}
+        />
       )}
     </div>
   );

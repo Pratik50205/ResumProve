@@ -19,3 +19,4 @@ export async function GET(request: Request) {
   // Return the user to an error page with instructions or back home
   return NextResponse.redirect(`${origin}/builder?auth_error=oauth_failed`);
 }
+

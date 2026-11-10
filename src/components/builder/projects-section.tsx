@@ -10,11 +10,13 @@ import {
   Github,
   Globe,
   Tag,
-  X
+  X,
+  Sparkles
 } from "lucide-react";
 import { Project } from "@/types/resume";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BulletImproverModal } from "./ai/bullet-improver-modal";
 
 interface ProjectsSectionProps {
   projects: Project[];
@@ -36,6 +38,13 @@ export function ProjectsSection({
   onRemoveBullet
 }: ProjectsSectionProps) {
   const [tagInput, setTagInput] = useState<Record<string, string>>({});
+  const [activeBulletModal, setActiveBulletModal] = useState<{
+    projId: string;
+    bulletIndex: number;
+    bulletText: string;
+    projectName: string;
+    technologies: string[];
+  } | null>(null);
 
   const handleAddTag = (projId: string) => {
     const raw = tagInput[projId]?.trim();
@@ -225,13 +234,32 @@ export function ProjectsSection({
                         placeholder="Describe key architectural or technical accomplishment..."
                         className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-white focus:border-brand-500 focus:outline-none resize-y placeholder:text-slate-600"
                       />
-                      <button
-                        onClick={() => onRemoveBullet(proj.id, bIdx)}
-                        title="Delete Bullet"
-                        className="p-1.5 rounded text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 mt-1"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center gap-1 mt-1 flex-shrink-0">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setActiveBulletModal({
+                              projId: proj.id,
+                              bulletIndex: bIdx,
+                              bulletText: bullet,
+                              projectName: proj.name,
+                              technologies: proj.technologies || [],
+                            })
+                          }
+                          title="Fact-Lock™ AI Bullet Improver"
+                          className="p-1.5 rounded-lg text-brand-400 hover:text-brand-300 hover:bg-brand-500/10 border border-brand-500/20 transition-colors flex items-center gap-1 text-[11px] font-semibold"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span className="hidden sm:inline">AI Fix</span>
+                        </button>
+                        <button
+                          onClick={() => onRemoveBullet(proj.id, bIdx)}
+                          title="Delete Bullet"
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -239,6 +267,22 @@ export function ProjectsSection({
             </div>
           ))}
         </div>
+      )}
+
+      {activeBulletModal && (
+        <BulletImproverModal
+          isOpen={!!activeBulletModal}
+          onClose={() => setActiveBulletModal(null)}
+          originalBullet={activeBulletModal.bulletText}
+          onApply={(improved) => {
+            onUpdateBullet(activeBulletModal.projId, activeBulletModal.bulletIndex, improved);
+            setActiveBulletModal(null);
+          }}
+          context={{
+            role: activeBulletModal.projectName,
+            skillsUsed: activeBulletModal.technologies,
+          }}
+        />
       )}
     </div>
   );

@@ -213,3 +213,4 @@ create trigger update_resumes_updated_at
 create trigger update_job_descriptions_updated_at
   before update on public.job_descriptions
   for each row execute procedure public.update_updated_at_column();
+

@@ -7,7 +7,7 @@ This document tracks the phased architecture and development roadmap of **ResumP
 ## 📊 Progress Overview
 
 ```
-[███████████████████░░░░░░░░░░░░░] 5 / 13 Phases Completed (38%)
+[██████████████████████░░░░░░░░░░] 6 / 13 Phases Completed (46%)
 ```
 
 | Phase | Description | Status | Verification |
@@ -17,8 +17,8 @@ This document tracks the phased architecture and development roadmap of **ResumP
 | **Phase 3** | **Template Engine & Print Stylesheet** | ✅ **Completed** | Clean Build (12/12 routes) + Multi-Template Vector Tested |
 | **Phase 4** | **Document Intelligence (PDF/DOCX/TXT Parser)** | ✅ **Completed** | Clean Build + End-to-End Extraction & Review Modal Tested |
 | **Phase 5** | **Online Backend (Supabase Auth, DB & RLS)** | ✅ **Completed** | Clean Build (13/13 routes) + Middleware & Schema Tested |
-| **Phase 6** | **AI Engine & Fact-Lock™ Guardrails** | ⏳ **Next Up** | Pending Execution |
-| **Phase 7** | **Job Intelligence & Ontology Extraction** | 📋 Queued | — |
+| **Phase 6** | **AI Engine & Fact-Lock™ Guardrails** | ✅ **Completed** | Clean Build (15/15 routes) + Fact-Lock Bullet/Summary Verified |
+| **Phase 7** | **Job Intelligence & Ontology Extraction** | ⏳ **Next Up** | Ready to Execute |
 | **Phase 8** | **Deterministic Compatibility Engine** | 📋 Queued | — |
 | **Phase 9** | **The Proof Score™ & Evidence Engine** | 📋 Queued | — |
 | **Phase 10** | **AI Optimization & Suggestion Engine** | 📋 Queued | — |
@@ -109,14 +109,17 @@ This document tracks the phased architecture and development roadmap of **ResumP
 
 ---
 
-### ⏳ Phase 6 — AI Engine & Fact-Lock™ Guardrails
+### ✅ Phase 6 — AI Engine & Fact-Lock™ Guardrails
 * **Goal**: Implement Gemini AI provider abstraction, bullet-level rewrites, summary generation, and strict fact-lock protection.
 * **Key Deliverables**:
-  - [ ] Pluggable AI provider interface (`gemini.ts`, `offline.ts`, future `openai.ts`).
-  - [ ] Secure server-side API proxy (API keys never exposed to the client).
-  - [ ] **Bullet Improver**: Impact boost, conciseness, active verbs, technical tone, and quantification prompt.
-  - [ ] **Fact-Lock™ Guardrails**: Strict prompt filters prohibiting fake metrics, false employers, or unearned credentials.
-  - [ ] Offline fallback mock engine for testing and cost control.
+  - [x] Pluggable AI provider interface (`src/lib/ai/geminiProvider.ts`, `src/lib/ai/mockProvider.ts`, `src/lib/ai/index.ts`).
+  - [x] Secure server-side API proxy (`/api/ai/improve-bullet` and `/api/ai/generate-summary` — API keys never exposed to client).
+  - [x] **Bullet Improver**: Impact boost, conciseness, active verbs, technical tone, and quantification prompt.
+  - [x] **Fact-Lock™ Guardrails**: Strict prompt filters prohibiting fake metrics, false employers, or unearned credentials; post-generation validation audit.
+  - [x] Guided metric placeholders (e.g. `[X%]`) to prevent hallucinations while prompting the candidate for truthful numbers.
+  - [x] Offline fallback mock engine using full action verb taxonomy and X-Y-Z formula for zero-cost operation.
+  - [x] UI Modals: `BulletImproverModal` and `SummaryGeneratorModal` integrated directly in builder summary, experience, and projects.
+* **Verification**: `npm run build` static export passing across all 15 routes with 0 errors; API endpoints tested and verified.
 
 ---
 

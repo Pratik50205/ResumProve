@@ -197,7 +197,7 @@ export default function BuilderPage() {
             )}
 
             {activeSection === "summary" && (
-              <SummarySection summary={resume.summary} onChange={updateSummary} />
+              <SummarySection summary={resume.summary} onChange={updateSummary} resume={resume} />
             )}
 
             {activeSection === "experience" && (
