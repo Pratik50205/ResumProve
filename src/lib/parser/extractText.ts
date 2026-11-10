@@ -4,22 +4,28 @@
 
 export async function extractTextFromPdf(buffer: ArrayBuffer | Uint8Array | Buffer): Promise<string> {
   try {
-    const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-    
-    // Ensure data is a pure Uint8Array and strictly NOT a Node.js Buffer instance
-    let data: Uint8Array;
+    // 1. Prepare clean Uint8Array that is guaranteed not to be a Node.js Buffer
+    let uint8: Uint8Array;
     if (typeof Buffer !== "undefined" && Buffer.isBuffer(buffer)) {
       const ab = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
-      data = new Uint8Array(ab);
+      uint8 = new Uint8Array(ab);
     } else if (buffer instanceof Uint8Array) {
       const ab = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
-      data = new Uint8Array(ab);
+      uint8 = new Uint8Array(ab);
     } else {
-      data = new Uint8Array(buffer);
+      uint8 = new Uint8Array(buffer);
     }
 
+    // 2. Load PDF using pdfjs-dist legacy build (and load worker module)
+    const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    try {
+      // @ts-ignore
+      await import("pdfjs-dist/legacy/build/pdf.worker.mjs");
+    } catch {
+      // Ignore if worker already loaded or bundled
+    }
     const loadingTask = pdfjs.getDocument({
-      data,
+      data: uint8,
       useSystemFonts: true,
       disableFontFace: true,
     });
@@ -39,7 +45,6 @@ export async function extractTextFromPdf(buffer: ArrayBuffer | Uint8Array | Buff
           const hasTransform = Array.isArray(item.transform);
           const currentY = hasTransform ? item.transform[5] : null;
 
-          // If vertical position changed substantially, start a newline
           if (lastY !== null && currentY !== null && Math.abs(currentY - lastY) > 6) {
             pageText += "\n";
           } else if (pageText.length > 0 && !pageText.endsWith("\n") && !pageText.endsWith(" ")) {
