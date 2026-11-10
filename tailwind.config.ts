@@ -49,8 +49,11 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-outfit)", "system-ui", "sans-serif"],
+        sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
+        display: ["var(--font-outfit)", "Outfit", "system-ui", "sans-serif"],
+        roboto: ["Roboto", "system-ui", "-apple-system", "sans-serif"],
+        merriweather: ["Merriweather", "Georgia", "serif"],
+        mono: ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-out forwards",

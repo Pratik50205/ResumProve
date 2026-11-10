@@ -9,7 +9,8 @@ import {
   Education,
   SkillGroups,
   Certification,
-  ResumeSettings
+  ResumeSettings,
+  TemplateId
 } from "@/types/resume";
 import { SAMPLE_RESUMES, BLANK_RESUME } from "@/data/sampleResumes";
 import { validateResume, ResumeValidationResult } from "@/lib/validation/resumeValidation";
@@ -34,13 +35,25 @@ export function useResumeState(initialSampleKey: string = "ml-engineer") {
   // Validation
   const [validation, setValidation] = useState<ResumeValidationResult>(() => validateResume(resume));
 
-  // 1. Initial load from localStorage
+  // 1. Initial load from localStorage & URL parameters
   useEffect(() => {
+    let templateParam: TemplateId | null = null;
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const t = params.get("template") as TemplateId | null;
+      if (t && ["ats-minimal", "modern-professional", "tech-specialist", "student-fresher"].includes(t)) {
+        templateParam = t;
+      }
+    }
+
     try {
       const savedData = localStorage.getItem(STORAGE_KEY);
       if (savedData) {
         const parsed = JSON.parse(savedData) as Resume;
         if (parsed && parsed.personal && parsed.personal.fullName) {
+          if (templateParam && parsed.settings) {
+            parsed.settings.template = templateParam;
+          }
           setResume(parsed);
           setHistory([parsed]);
           setHistoryIndex(0);
@@ -53,7 +66,10 @@ export function useResumeState(initialSampleKey: string = "ml-engineer") {
     } catch (err) {
       console.warn("Failed to load saved resume from localStorage:", err);
     }
-    const initial = SAMPLE_RESUMES[initialSampleKey] || SAMPLE_RESUMES["ml-engineer"];
+    const initial = { ...(SAMPLE_RESUMES[initialSampleKey] || SAMPLE_RESUMES["ml-engineer"]) };
+    if (templateParam && initial.settings) {
+      initial.settings = { ...initial.settings, template: templateParam };
+    }
     setResume(initial);
     setHistory([initial]);
     setHistoryIndex(0);

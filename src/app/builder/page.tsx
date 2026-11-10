@@ -256,6 +256,12 @@ export default function BuilderPage() {
               onTemplateChange={(tpl) => updateSettings({ template: tpl })}
               primaryColor={resume.settings?.primaryColor || "#4f46e5"}
               onColorChange={(color) => updateSettings({ primaryColor: color })}
+              fontFamily={resume.settings?.fontFamily || "Inter"}
+              onFontFamilyChange={(font) => updateSettings({ fontFamily: font })}
+              lineSpacing={resume.settings?.lineSpacing || "normal"}
+              onLineSpacingChange={(spacing) => updateSettings({ lineSpacing: spacing })}
+              showIcons={resume.settings?.showIcons ?? true}
+              onShowIconsChange={(show) => updateSettings({ showIcons: show })}
               onPrint={handlePrint}
             />
           </div>
