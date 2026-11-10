@@ -7,7 +7,7 @@ This document tracks the phased architecture and development roadmap of **ResumP
 ## 📊 Progress Overview
 
 ```
-[███████████████░░░░░░░░░░░░░░░░░] 4 / 13 Phases Completed (31%)
+[███████████████████░░░░░░░░░░░░░] 5 / 13 Phases Completed (38%)
 ```
 
 | Phase | Description | Status | Verification |
@@ -16,8 +16,8 @@ This document tracks the phased architecture and development roadmap of **ResumP
 | **Phase 2** | **Resume Engine & Live Builder** | ✅ **Completed** | Clean Build + Live Split-Screen E2E Verified |
 | **Phase 3** | **Template Engine & Print Stylesheet** | ✅ **Completed** | Clean Build (12/12 routes) + Multi-Template Vector Tested |
 | **Phase 4** | **Document Intelligence (PDF/DOCX/TXT Parser)** | ✅ **Completed** | Clean Build + End-to-End Extraction & Review Modal Tested |
-| **Phase 5** | **Online Backend (Supabase Auth, DB & RLS)** | ⏳ **Next Up** | Pending Execution |
-| **Phase 6** | **AI Engine & Fact-Lock™ Guardrails** | 📋 Queued | — |
+| **Phase 5** | **Online Backend (Supabase Auth, DB & RLS)** | ✅ **Completed** | Clean Build (13/13 routes) + Middleware & Schema Tested |
+| **Phase 6** | **AI Engine & Fact-Lock™ Guardrails** | ⏳ **Next Up** | Pending Execution |
 | **Phase 7** | **Job Intelligence & Ontology Extraction** | 📋 Queued | — |
 | **Phase 8** | **Deterministic Compatibility Engine** | 📋 Queued | — |
 | **Phase 9** | **The Proof Score™ & Evidence Engine** | 📋 Queued | — |
@@ -92,17 +92,24 @@ This document tracks the phased architecture and development roadmap of **ResumP
 
 ---
 
-### ⏳ Phase 5 — Online Backend & Cloud Persistence
+### ✅ Phase 5 — Online Backend & Cloud Persistence
 * **Goal**: Connect Supabase PostgreSQL database, Authentication, Storage, and Row-Level Security.
 * **Key Deliverables**:
-  - [ ] Supabase Auth (Email/Password + Google OAuth).
-  - [ ] PostgreSQL Schema: `profiles`, `resumes`, `job_descriptions`, `compatibility_analyses`, `proof_analyses`, `resume_versions`.
-  - [ ] Strict Row Level Security (RLS) policies guaranteeing total user data isolation.
-  - [ ] Hybrid Cloud + Local persistence (seamless transition between Guest Demo and Logged-in Cloud state).
+  - [x] Installed and configured `@supabase/supabase-js` and `@supabase/ssr`.
+  - [x] Complete PostgreSQL Schema with 6 core tables: `profiles`, `resumes`, `resume_versions`, `job_descriptions`, `compatibility_analyses`, `proof_analyses` (`supabase/schema.sql`).
+  - [x] Strict Row Level Security (RLS) policies for complete user data isolation.
+  - [x] Auto-trigger `handle_new_user()` creating a profile on registration in `auth.users`.
+  - [x] Browser client, Server client, and Session Cookie Middleware (`src/middleware.ts`).
+  - [x] React Auth Context & Provider (`useAuth`) with email/password, Google & GitHub OAuth.
+  - [x] Auth Modal with login/signup tabs and OAuth callback handler (`/auth/callback`).
+  - [x] User Menu with avatar initials, cloud status indicator, and sign-out controls.
+  - [x] Hybrid Cloud + Local persistence architecture (smooth guest-to-cloud experience).
+  - [x] Live Career Portfolio Dashboard (`/dashboard`) showcasing cloud and local resume documents.
+* **Verification**: `npm run build` static export passing across all 13 routes and middleware with 0 errors.
 
 ---
 
-### 📋 Phase 6 — AI Engine & Fact-Lock™ Guardrails
+### ⏳ Phase 6 — AI Engine & Fact-Lock™ Guardrails
 * **Goal**: Implement Gemini AI provider abstraction, bullet-level rewrites, summary generation, and strict fact-lock protection.
 * **Key Deliverables**:
   - [ ] Pluggable AI provider interface (`gemini.ts`, `offline.ts`, future `openai.ts`).

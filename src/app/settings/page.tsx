@@ -1,14 +1,18 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { Settings, ArrowLeft, Sun, Moon, Laptop, Palette, ShieldCheck } from "lucide-react";
+import { Settings, ArrowLeft, Sun, Moon, Laptop, Palette, ShieldCheck, Database, Cloud, CloudOff, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useTheme, Theme } from "@/components/theme/theme-provider";
+import { useAuth } from "@/lib/auth/useAuth";
+import { AuthModal } from "@/components/auth/auth-modal";
 
 export default function SettingsPage() {
   const { theme, resolvedTheme, setTheme } = useTheme();
+  const { user, profile, isConfigured, signOut } = useAuth();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const themeOptions: { value: Theme; label: string; desc: string; icon: React.ComponentType<{ className?: string }> }[] = [
     {
@@ -114,6 +118,75 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* Supabase Cloud & Account Section */}
+      <div className="surface-card rounded-3xl p-6 sm:p-8 space-y-6">
+        <div className="flex items-center gap-2.5 pb-4 border-b border-slate-200 dark:border-slate-800">
+          <Database className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+          <h2 className="font-display text-lg font-bold text-slate-900 dark:text-white">
+            Cloud Account & Persistence
+          </h2>
+          <Badge
+            variant={user ? "proof" : "default"}
+            size="sm"
+            className="ml-auto text-[10px]"
+          >
+            {user ? "Cloud Synced" : "Guest Mode"}
+          </Badge>
+        </div>
+
+        <div className="space-y-4 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+          {user ? (
+            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-bold text-slate-900 dark:text-white">
+                    {profile?.full_name || user.email?.split("@")[0] || "User"}
+                  </h4>
+                  <p className="text-slate-500 dark:text-slate-400 text-[11px]">{user.email}</p>
+                </div>
+                <Badge variant="brand" size="sm" className="uppercase font-mono text-[10px]">
+                  {profile?.plan || "Free"} Plan
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-emerald-500/20">
+                <span className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                  <Cloud className="w-3.5 h-3.5" />
+                  <span>Row Level Security (RLS) active on all resumes</span>
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => signOut()}
+                  className="h-7 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20"
+                >
+                  <LogOut className="w-3.5 h-3.5 mr-1" /> Sign Out
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/80 space-y-3">
+              <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                <CloudOff className="w-4 h-4 text-amber-500" />
+                <span>Running in Local Storage Mode</span>
+              </div>
+              <p className="text-[11.5px] text-slate-500 dark:text-slate-400">
+                Resumes and analyses are stored in your browser. Connect Supabase to sync across devices, track version histories, and protect data.
+              </p>
+              <div className="pt-2 flex items-center gap-2">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="text-xs"
+                >
+                  Sign In / Register
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="pt-2 flex justify-start">
         <Link href="/">
           <Button variant="secondary" size="md">
@@ -121,6 +194,11 @@ export default function SettingsPage() {
           </Button>
         </Link>
       </div>
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </div>
   );
 }

@@ -11,10 +11,13 @@ import {
   FileCode,
   Check,
   Copy,
-  ChevronDown
+  ChevronDown,
+  Cloud,
+  CloudOff
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/lib/auth/useAuth";
 
 interface BuilderHeaderProps {
   title: string;
@@ -47,6 +50,7 @@ export function BuilderHeader({
   onImportJSON,
   onOpenImportModal
 }: BuilderHeaderProps) {
+  const { user } = useAuth();
   const [sampleMenuOpen, setSampleMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
@@ -107,8 +111,17 @@ export function BuilderHeader({
           />
           <div className="flex items-center gap-2 mt-0.5">
             <span className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
-              {isAutosaving ? "Saving..." : "All changes saved locally"}
+              {user ? (
+                <>
+                  <Cloud className="w-3.5 h-3.5" />
+                  <span>{isAutosaving ? "Saving..." : "Synced to Supabase Cloud"}</span>
+                </>
+              ) : (
+                <>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
+                  <span>{isAutosaving ? "Saving..." : "Saved locally (Guest Mode)"}</span>
+                </>
+              )}
             </span>
             {lastSaved && !isAutosaving && (
               <span className="text-[10px] text-slate-500 hidden sm:inline">

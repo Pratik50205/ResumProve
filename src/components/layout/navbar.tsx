@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { UserMenu } from "@/components/auth/user-menu";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -91,16 +92,13 @@ export function Navbar() {
                 <ArrowRight className="w-3.5 h-3.5 ml-1" />
               </Button>
             </Link>
+            <UserMenu />
           </div>
 
           {/* Mobile hamburger button */}
           <div className="flex md:hidden items-center gap-2">
             <ThemeToggle />
-            <Link href="/builder">
-              <Button variant="primary" size="sm">
-                Build
-              </Button>
-            </Link>
+            <UserMenu />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 focus:outline-none cursor-pointer"
