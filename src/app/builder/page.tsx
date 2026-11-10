@@ -29,6 +29,7 @@ import { PreviewToolbar } from "@/components/preview/preview-toolbar";
 import { LiveResumePreview } from "@/components/preview/live-resume-preview";
 import { ImportResumeModal } from "@/components/builder/import-resume-modal";
 import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
 
 type SectionTab = "personal" | "summary" | "experience" | "projects" | "education" | "skills" | "certifications";
 
@@ -191,65 +192,75 @@ export default function BuilderPage() {
           </div>
 
           {/* Active Section Form Box */}
-          <div className="rounded-3xl surface-card p-5 sm:p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_36px_-8px_rgba(0,0,0,0.6)]">
-            {activeSection === "personal" && (
-              <PersonalSection data={resume.personal} onChange={updatePersonal} />
-            )}
+          <div className="rounded-3xl surface-card p-5 sm:p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_36px_-8px_rgba(0,0,0,0.6)] overflow-hidden">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={activeSection}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+              >
+                {activeSection === "personal" && (
+                  <PersonalSection data={resume.personal} onChange={updatePersonal} />
+                )}
 
-            {activeSection === "summary" && (
-              <SummarySection summary={resume.summary} onChange={updateSummary} resume={resume} />
-            )}
+                {activeSection === "summary" && (
+                  <SummarySection summary={resume.summary} onChange={updateSummary} resume={resume} />
+                )}
 
-            {activeSection === "experience" && (
-              <ExperienceSection
-                experience={resume.experience || []}
-                onAdd={() => addExperience()}
-                onUpdate={updateExperience}
-                onRemove={removeExperience}
-                onReorder={reorderExperience}
-                onAddBullet={addExperienceBullet}
-                onUpdateBullet={updateExperienceBullet}
-                onRemoveBullet={removeExperienceBullet}
-              />
-            )}
+                {activeSection === "experience" && (
+                  <ExperienceSection
+                    experience={resume.experience || []}
+                    onAdd={() => addExperience()}
+                    onUpdate={updateExperience}
+                    onRemove={removeExperience}
+                    onReorder={reorderExperience}
+                    onAddBullet={addExperienceBullet}
+                    onUpdateBullet={updateExperienceBullet}
+                    onRemoveBullet={removeExperienceBullet}
+                  />
+                )}
 
-            {activeSection === "projects" && (
-              <ProjectsSection
-                projects={resume.projects || []}
-                onAdd={() => addProject()}
-                onUpdate={updateProject}
-                onRemove={removeProject}
-                onAddBullet={addProjectBullet}
-                onUpdateBullet={updateProjectBullet}
-                onRemoveBullet={removeProjectBullet}
-              />
-            )}
+                {activeSection === "projects" && (
+                  <ProjectsSection
+                    projects={resume.projects || []}
+                    onAdd={() => addProject()}
+                    onUpdate={updateProject}
+                    onRemove={removeProject}
+                    onAddBullet={addProjectBullet}
+                    onUpdateBullet={updateProjectBullet}
+                    onRemoveBullet={removeProjectBullet}
+                  />
+                )}
 
-            {activeSection === "skills" && (
-              <SkillsSection
-                skills={resume.skills}
-                onAddSkill={addSkill}
-                onRemoveSkill={removeSkill}
-              />
-            )}
+                {activeSection === "skills" && (
+                  <SkillsSection
+                    skills={resume.skills}
+                    onAddSkill={addSkill}
+                    onRemoveSkill={removeSkill}
+                  />
+                )}
 
-            {activeSection === "education" && (
-              <EducationSection
-                education={resume.education || []}
-                onAdd={() => addEducation()}
-                onUpdate={updateEducation}
-                onRemove={removeEducation}
-              />
-            )}
+                {activeSection === "education" && (
+                  <EducationSection
+                    education={resume.education || []}
+                    onAdd={() => addEducation()}
+                    onUpdate={updateEducation}
+                    onRemove={removeEducation}
+                  />
+                )}
 
-            {activeSection === "certifications" && (
-              <CertsSection
-                certifications={resume.certifications || []}
-                onAdd={() => addCertification()}
-                onUpdate={updateCertification}
-                onRemove={removeCertification}
-              />
-            )}
+                {activeSection === "certifications" && (
+                  <CertsSection
+                    certifications={resume.certifications || []}
+                    onAdd={() => addCertification()}
+                    onUpdate={updateCertification}
+                    onRemove={removeCertification}
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
 

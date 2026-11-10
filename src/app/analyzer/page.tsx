@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { useJobState } from "@/lib/job/useJobState";
 import { JobInputPanel } from "@/components/analyzer/job-input-panel";
 import { JobIntelligenceView } from "@/components/analyzer/job-intelligence-view";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function AnalyzerPage() {
   const {

@@ -23,6 +23,7 @@ import {
 import { ParsedJob } from "@/types/job";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface JobIntelligenceViewProps {
   parsed: ParsedJob | undefined;
@@ -50,7 +51,12 @@ export const JobIntelligenceView: React.FC<JobIntelligenceViewProps> = ({
 
   if (!parsed) {
     return (
-      <div className="flex flex-col items-center justify-center h-full min-h-[460px] bg-white dark:bg-slate-900/40 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center transition-colors">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="flex flex-col items-center justify-center h-full min-h-[460px] bg-white dark:bg-slate-900/40 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center transition-colors"
+      >
         <div className="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400 mb-4 shadow-sm">
           <FileCheck2 className="w-7 h-7" />
         </div>
@@ -60,7 +66,7 @@ export const JobIntelligenceView: React.FC<JobIntelligenceViewProps> = ({
         <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed mb-4">
           Paste a target job posting in the editor or load a benchmark role to extract seniority signals, required skills, and core responsibilities.
         </p>
-      </div>
+      </motion.div>
     );
   }
 
@@ -95,7 +101,13 @@ export const JobIntelligenceView: React.FC<JobIntelligenceViewProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] space-y-5 overflow-y-auto transition-colors">
+    <motion.div
+      key={parsed.role + (parsed.company || "")}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.22, ease: "easeOut" }}
+      className="flex flex-col h-full bg-white dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] space-y-5 overflow-y-auto transition-colors"
+    >
       {/* 1. Header Card: Title, Company & Key Metadata */}
       <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800/80 space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-2">
@@ -390,6 +402,6 @@ export const JobIntelligenceView: React.FC<JobIntelligenceViewProps> = ({
           </Button>
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 };

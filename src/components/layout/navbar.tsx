@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { UserMenu } from "@/components/auth/user-menu";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -65,14 +66,21 @@ export function Navbar() {
                   key={link.name}
                   href={link.href}
                   className={cn(
-                    "flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
+                    "relative flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-sm font-medium transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
                     isActive
-                      ? "bg-white dark:bg-slate-800/90 text-slate-900 dark:text-white shadow-sm dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1),0_2px_8px_-2px_rgba(0,0,0,0.5)] border border-slate-200 dark:border-slate-700/80"
-                      : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800/50"
+                      ? "text-slate-900 dark:text-white"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800/50"
                   )}
                 >
-                  <Icon className={cn("w-4 h-4 transition-colors", isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400")} />
-                  <span>{link.name}</span>
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-active-pill"
+                      className="absolute inset-0 rounded-xl bg-white dark:bg-slate-800/90 shadow-sm dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1),0_2px_8px_-2px_rgba(0,0,0,0.5)] border border-slate-200/90 dark:border-slate-700/80 -z-10"
+                      transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                    />
+                  )}
+                  <Icon className={cn("w-4 h-4 transition-colors relative z-10", isActive ? "text-brand-600 dark:text-brand-400" : "text-slate-400")} />
+                  <span className="relative z-10">{link.name}</span>
                 </Link>
               );
             })}

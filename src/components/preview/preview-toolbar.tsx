@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TemplateId, ResumeSettings } from "@/types/resume";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface PreviewToolbarProps {
   zoom: number;
@@ -156,9 +157,16 @@ export function PreviewToolbar({
       </div>
 
       {/* Expandable Customizer Controls Panel */}
-      {showCustomizer && (
-        <div className="pt-2.5 border-t border-slate-200 dark:border-slate-800/80 grid grid-cols-1 sm:grid-cols-12 gap-3 text-xs animate-fade-in">
-          {/* 1. Font Family Picker */}
+      <AnimatePresence>
+        {showCustomizer && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.18, ease: "easeInOut" }}
+            className="pt-2.5 border-t border-slate-200 dark:border-slate-800/80 grid grid-cols-1 sm:grid-cols-12 gap-3 text-xs overflow-hidden"
+          >
+            {/* 1. Font Family Picker */}
           <div className="sm:col-span-4 space-y-1">
             <label className="text-[10px] uppercase font-bold text-slate-600 dark:text-slate-400 flex items-center gap-1">
               <Type className="w-3 h-3 text-brand-500" />
@@ -236,8 +244,9 @@ export function PreviewToolbar({
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
-    </div>
+    </AnimatePresence>
+  </div>
   );
 }
