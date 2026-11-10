@@ -30,6 +30,10 @@ export function SkillsSection({
     { key: "cloud", label: "Cloud" },
     { key: "devops", label: "DevOps" },
     { key: "tools", label: "Tools" },
+    { key: "mobile", label: "Mobile" },
+    { key: "testing", label: "Testing & QA" },
+    { key: "cybersecurity", label: "Cybersecurity" },
+    { key: "systemDesign", label: "System Design" },
     { key: "softSkills", label: "Soft Skills" }
   ];
 
@@ -54,6 +58,10 @@ export function SkillsSection({
       cloud: "Cloud",
       devops: "DevOps",
       tools: "Tools",
+      mobile: "Mobile",
+      testing: "Testing",
+      cybersecurity: "Cybersecurity",
+      systemDesign: "System Design",
       softSkills: "Soft Skills"
     };
     return s.category === mapCategory[activeCategory];

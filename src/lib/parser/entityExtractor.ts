@@ -392,6 +392,11 @@ export function extractSkillsFromDocument(skillsSectionLines: string[], fullDocu
     devops: [],
     tools: [],
     softSkills: [],
+    mobile: [],
+    testing: [],
+    cybersecurity: [],
+    systemDesign: [],
+    management: [],
   };
 
   detectedSkills.forEach((def) => {
@@ -425,6 +430,21 @@ export function extractSkillsFromDocument(skillsSectionLines: string[], fullDocu
         break;
       case "Soft Skills":
         skillGroups.softSkills?.push(def.name);
+        break;
+      case "Mobile":
+        skillGroups.mobile?.push(def.name);
+        break;
+      case "Testing":
+        skillGroups.testing?.push(def.name);
+        break;
+      case "Cybersecurity":
+        skillGroups.cybersecurity?.push(def.name);
+        break;
+      case "System Design":
+        skillGroups.systemDesign?.push(def.name);
+        break;
+      case "Management":
+        skillGroups.management?.push(def.name);
         break;
     }
   });

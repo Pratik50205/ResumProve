@@ -87,3 +87,4 @@ export function auditFactLock(originalText: string, suggestedText: string): Fact
     sanitizedText: suggestedText.trim(),
   };
 }
+

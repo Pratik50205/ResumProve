@@ -56,7 +56,12 @@ export type SkillCategory =
   | "Cloud"
   | "DevOps"
   | "Tools"
-  | "Soft Skills";
+  | "Soft Skills"
+  | "Mobile"
+  | "Testing"
+  | "Cybersecurity"
+  | "System Design"
+  | "Management";
 
 export interface SkillItem {
   id: string;
@@ -77,6 +82,11 @@ export interface SkillGroups {
   devops?: string[];
   tools?: string[];
   softSkills?: string[];
+  mobile?: string[];
+  testing?: string[];
+  cybersecurity?: string[];
+  systemDesign?: string[];
+  management?: string[];
   custom?: { category: string; skills: string[] }[];
 }
 

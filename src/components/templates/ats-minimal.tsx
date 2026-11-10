@@ -17,6 +17,9 @@ export const AtsMinimalTemplate: React.FC<TemplateProps> = ({ resume, settings }
     { label: "Backend", list: skills?.backend },
     { label: "Databases", list: skills?.databases },
     { label: "Cloud & DevOps", list: [...(skills?.cloud || []), ...(skills?.devops || [])] },
+    { label: "Mobile", list: skills?.mobile },
+    { label: "Testing & QA", list: skills?.testing },
+    { label: "Security & Systems", list: [...(skills?.cybersecurity || []), ...(skills?.systemDesign || [])] },
     { label: "Tools", list: skills?.tools },
     { label: "Soft Skills", list: skills?.softSkills },
   ].filter((cat) => cat.list && cat.list.length > 0);

@@ -129,3 +129,4 @@ RULES:
     return this.mockFallback.analyzeResume(resume, job);
   }
 }
+
