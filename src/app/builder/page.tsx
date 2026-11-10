@@ -93,7 +93,7 @@ export default function BuilderPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 flex flex-col">
       {/* Top Builder Toolbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2 w-full no-print">
         <BuilderHeader
@@ -114,13 +114,13 @@ export default function BuilderPage() {
 
       {/* Mobile Toggle: Edit vs Preview */}
       <div className="lg:hidden max-w-7xl mx-auto px-4 w-full py-2 no-print">
-        <div className="grid grid-cols-2 gap-2 bg-slate-900 p-1 rounded-xl border border-slate-800">
+        <div className="grid grid-cols-2 gap-2 bg-slate-200 dark:bg-slate-900 p-1 rounded-xl border border-slate-300 dark:border-slate-800">
           <button
             onClick={() => setMobileView("edit")}
             className={`py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               mobileView === "edit"
                 ? "bg-brand-600 text-white shadow-md"
-                : "text-slate-400 hover:text-white"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             <Edit3 className="w-3.5 h-3.5" />
@@ -131,7 +131,7 @@ export default function BuilderPage() {
             className={`py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               mobileView === "preview"
                 ? "bg-brand-600 text-white shadow-md"
-                : "text-slate-400 hover:text-white"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             <Eye className="w-3.5 h-3.5" />
@@ -160,16 +160,16 @@ export default function BuilderPage() {
                 <button
                   key={sec.id}
                   onClick={() => setActiveSection(sec.id)}
-                  className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 flex-shrink-0 ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 flex-shrink-0 cursor-pointer ${
                     isSelected
-                      ? "bg-brand-600 text-white shadow-md shadow-brand-500/20"
-                      : "bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800/80 hover:bg-slate-800"
+                      ? "bg-brand-600 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2),0_4px_12px_rgba(99,102,241,0.3)] border border-brand-400/40"
+                      : "surface-card text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-700/80"
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
                   <span>{sec.label}</span>
                   {typeof sec.count === "number" && sec.count > 0 && (
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? "bg-white/20 text-white" : "bg-slate-800 text-slate-400"}`}>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${isSelected ? "bg-white/20 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300"}`}>
                       {sec.count}
                     </span>
                   )}
@@ -179,7 +179,7 @@ export default function BuilderPage() {
           </div>
 
           {/* Active Section Form Box */}
-          <div className="rounded-3xl bg-slate-900/80 border border-slate-800 p-5 sm:p-6 shadow-xl backdrop-blur-xl">
+          <div className="rounded-3xl surface-card p-5 sm:p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_36px_-8px_rgba(0,0,0,0.6)]">
             {activeSection === "personal" && (
               <PersonalSection data={resume.personal} onChange={updatePersonal} />
             )}

@@ -92,7 +92,7 @@ export function BuilderHeader({
   };
 
   return (
-    <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 shadow-xl backdrop-blur-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-4 shadow-md dark:shadow-xl backdrop-blur-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
       {/* Title & Autosave state */}
       <div className="flex items-center gap-3 flex-1 min-w-0">
         <div className="flex flex-col flex-1 min-w-0">
@@ -101,11 +101,11 @@ export function BuilderHeader({
             value={title}
             onChange={(e) => onUpdateTitle(e.target.value)}
             placeholder="Untitled Resume"
-            className="font-display font-bold text-base sm:text-lg text-white bg-transparent border-b border-transparent hover:border-slate-700 focus:border-brand-500 focus:outline-none transition-colors truncate"
+            className="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-brand-500 focus:outline-none transition-colors truncate"
           />
           <div className="flex items-center gap-2 mt-0.5">
-            <span className="text-[11px] text-emerald-400 flex items-center gap-1 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
               {isAutosaving ? "Saving..." : "All changes saved locally"}
             </span>
             {lastSaved && !isAutosaving && (
@@ -120,12 +120,12 @@ export function BuilderHeader({
       {/* Toolbar actions */}
       <div className="flex flex-wrap items-center gap-2">
         {/* Undo / Redo */}
-        <div className="flex items-center rounded-xl bg-slate-950/60 border border-slate-800 p-1">
+        <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 p-1 shadow-sm dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
           <button
             onClick={onUndo}
             disabled={!canUndo}
             title="Undo (Ctrl+Z)"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <Undo2 className="w-4 h-4" />
           </button>
@@ -133,7 +133,7 @@ export function BuilderHeader({
             onClick={onRedo}
             disabled={!canRedo}
             title="Redo (Ctrl+Y)"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <Redo2 className="w-4 h-4" />
           </button>
@@ -145,16 +145,16 @@ export function BuilderHeader({
             variant="outline"
             size="sm"
             onClick={() => setSampleMenuOpen(!sampleMenuOpen)}
-            className="text-xs gap-1.5 bg-slate-950/60"
+            className="text-xs gap-1.5"
           >
-            <Sparkles className="w-3.5 h-3.5 text-brand-400" />
+            <Sparkles className="w-3.5 h-3.5 text-brand-500 dark:text-brand-400" />
             <span>Load Sample Profile</span>
-            <ChevronDown className="w-3 h-3 text-slate-400 ml-0.5" />
+            <ChevronDown className="w-3 h-3 text-slate-500 dark:text-slate-400 ml-0.5" />
           </Button>
 
           {sampleMenuOpen && (
-            <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-[#0e1626] border border-slate-700 shadow-2xl p-2 z-50 animate-fade-in space-y-1">
-              <span className="px-3 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+            <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-white dark:bg-[#0e1626] border border-slate-200 dark:border-slate-700 shadow-2xl p-2 z-50 animate-fade-in space-y-1">
+              <span className="px-3 py-1.5 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
                 Select Realistic Profile
               </span>
               {samples.map((s) => (
@@ -164,7 +164,7 @@ export function BuilderHeader({
                     onLoadSample(s.key);
                     setSampleMenuOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-200 hover:bg-slate-800 hover:text-white transition-colors flex items-center justify-between group"
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-950 dark:hover:text-white transition-colors flex items-center justify-between group cursor-pointer"
                 >
                   <span className="font-medium truncate pr-2">{s.label}</span>
                   <Badge variant="default" size="sm" className="text-[10px] py-0">
@@ -172,13 +172,13 @@ export function BuilderHeader({
                   </Badge>
                 </button>
               ))}
-              <div className="pt-1.5 border-t border-slate-800">
+              <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800">
                 <button
                   onClick={() => {
                     onResetResume();
                     setSampleMenuOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-xl text-xs text-rose-400 hover:bg-rose-500/10 transition-colors flex items-center gap-1.5"
+                  className="w-full text-left px-3 py-2 rounded-xl text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Start from Blank Resume</span>

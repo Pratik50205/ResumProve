@@ -89,17 +89,17 @@ export function Workflow() {
   ];
 
   return (
-    <section className="py-20 lg:py-28 relative border-t border-slate-800/80 bg-[#090d16]">
+    <section className="py-20 lg:py-28 relative border-t border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-[#090d16]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <Badge variant="proof" size="md">
             Seamless End-to-End Flow
           </Badge>
-          <h2 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight">
+          <h2 className="font-display text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
             How ResumProve <br />
             <span className="gradient-text-proof">Powers Your Career</span>
           </h2>
-          <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed">
             From raw input to interview-ready, verified PDF in 6 precision steps.
           </p>
         </div>
@@ -115,15 +115,15 @@ export function Workflow() {
                 onClick={() => setActiveStep(index)}
                 className={`p-3 rounded-2xl border text-left transition-all flex flex-col gap-2 ${
                   isSelected
-                    ? "bg-slate-800 border-brand-500/50 shadow-lg shadow-brand-500/10"
-                    : "bg-slate-900/40 border-slate-800/80 hover:bg-slate-800/30"
+                    ? "bg-white dark:bg-slate-800 border-brand-500/50 shadow-md shadow-brand-500/10"
+                    : "bg-slate-100/70 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800/80 hover:bg-slate-200/50 dark:hover:bg-slate-800/30"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs text-slate-500 font-bold">{s.number}</span>
-                  <Icon className={`w-4 h-4 ${isSelected ? s.color : "text-slate-500"}`} />
+                  <span className="font-mono text-xs text-slate-500 dark:text-slate-400 font-bold">{s.number}</span>
+                  <Icon className={`w-4 h-4 ${isSelected ? s.color : "text-slate-400 dark:text-slate-500"}`} />
                 </div>
-                <span className={`text-xs font-semibold line-clamp-1 ${isSelected ? "text-white" : "text-slate-400"}`}>
+                <span className={`text-xs font-semibold line-clamp-1 ${isSelected ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-400"}`}>
                   {s.title}
                 </span>
               </button>
@@ -137,24 +137,24 @@ export function Workflow() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="rounded-3xl bg-slate-900/80 border border-slate-800 p-8 sm:p-10 shadow-2xl backdrop-blur-xl"
+          className="rounded-3xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 p-8 sm:p-10 shadow-xl dark:shadow-2xl backdrop-blur-xl"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-4">
               <div className="flex items-center gap-3">
-                <span className="font-mono text-sm font-bold text-slate-500">
+                <span className="font-mono text-sm font-bold text-slate-500 dark:text-slate-400">
                   STEP {steps[activeStep].number}
                 </span>
-                <Badge variant="default" size="sm" className="border-slate-700 text-slate-300">
+                <Badge variant="default" size="sm" className="border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300">
                   {steps[activeStep].badge}
                 </Badge>
               </div>
 
-              <h3 className="font-display text-2xl sm:text-3xl font-bold text-white">
+              <h3 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
                 {steps[activeStep].title}
               </h3>
 
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
                 {steps[activeStep].detail}
               </p>
 
@@ -168,7 +168,7 @@ export function Workflow() {
                 {activeStep < steps.length - 1 && (
                   <button
                     onClick={() => setActiveStep((prev) => prev + 1)}
-                    className="text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+                    className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
                   >
                     Next Step ({steps[activeStep + 1].number}) →
                   </button>
@@ -177,25 +177,25 @@ export function Workflow() {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="rounded-2xl bg-slate-950 border border-slate-800 p-6 space-y-3 font-mono text-xs">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                  <span className="text-slate-400 font-semibold">STAGE PREVIEW</span>
-                  <span className="text-emerald-400 text-[11px] flex items-center gap-1">
+              <div className="rounded-2xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 space-y-3 font-mono text-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-semibold">STAGE PREVIEW</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 text-[11px] flex items-center gap-1 font-semibold">
                     <CheckCircle className="w-3 h-3" /> READY
                   </span>
                 </div>
-                <div className="space-y-2 text-slate-300">
+                <div className="space-y-2 text-slate-700 dark:text-slate-300">
                   <div className="flex justify-between">
                     <span className="text-slate-500">Operation:</span>
-                    <span className="text-slate-200">{steps[activeStep].badge}</span>
+                    <span className="text-slate-900 dark:text-slate-200 font-medium">{steps[activeStep].badge}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Execution:</span>
-                    <span className="text-slate-200">Deterministic + Fact-Lock</span>
+                    <span className="text-slate-900 dark:text-slate-200 font-medium">Deterministic + Fact-Lock</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">User Override:</span>
-                    <span className="text-emerald-400 font-bold">100% Control</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">100% Control</span>
                   </div>
                 </div>
               </div>

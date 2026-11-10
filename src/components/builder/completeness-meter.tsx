@@ -27,23 +27,23 @@ export function CompletenessMeter({ validation }: CompletenessMeterProps) {
   const badge = getScoreBadge(validation.score);
 
   return (
-    <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 shadow-lg backdrop-blur-md">
+    <div className="rounded-2xl surface-card p-4 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_4px_20px_-4px_rgba(0,0,0,0.5)]">
       {/* Header */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-400">
+          <div className="w-8 h-8 rounded-xl bg-brand-500/15 border border-brand-500/30 flex items-center justify-center text-brand-600 dark:text-brand-400 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)]">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-white uppercase tracking-wider font-display">
+              <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-display">
                 Resume Completeness
               </span>
-              <Badge variant={badge.variant} size="sm" className="text-[10px] py-0 px-1.5">
+              <Badge variant={badge.variant} size="sm" className="text-[10px] py-0 px-1.5 shadow-sm">
                 {badge.label}
               </Badge>
             </div>
-            <span className="text-[11px] text-slate-400">
+            <span className="text-[11px] text-slate-600 dark:text-slate-300">
               {validation.items.filter(i => i.isComplete).length} of {validation.items.length} quality milestones met
             </span>
           </div>
@@ -51,13 +51,13 @@ export function CompletenessMeter({ validation }: CompletenessMeterProps) {
 
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <span className="font-display text-lg font-black text-white">
+            <span className="font-display text-lg font-black text-slate-900 dark:text-white">
               {validation.score}%
             </span>
           </div>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             aria-label="Toggle checklist details"
           >
             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -66,7 +66,7 @@ export function CompletenessMeter({ validation }: CompletenessMeterProps) {
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full h-2 rounded-full bg-slate-800 mt-3 overflow-hidden">
+      <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-800 mt-3 overflow-hidden">
         <div
           className={`h-full rounded-full bg-gradient-to-r ${getScoreColor(validation.score)} transition-all duration-500`}
           style={{ width: `${validation.score}%` }}
@@ -75,28 +75,28 @@ export function CompletenessMeter({ validation }: CompletenessMeterProps) {
 
       {/* Expandable Quality Checklist */}
       {isExpanded && (
-        <div className="mt-4 pt-3 border-t border-slate-800 space-y-2 animate-fade-in text-xs">
+        <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2 animate-fade-in text-xs">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {validation.items.map((item) => (
               <div
                 key={item.id}
                 className={`p-2.5 rounded-xl border flex items-start gap-2 ${
                   item.isComplete
-                    ? "bg-slate-950/60 border-slate-800/80 text-slate-300"
-                    : "bg-amber-500/5 border-amber-500/20 text-slate-200"
+                    ? "bg-slate-100 dark:bg-slate-950/60 border-slate-200 dark:border-slate-800/80 text-slate-700 dark:text-slate-300"
+                    : "bg-amber-50 dark:bg-amber-500/5 border-amber-200 dark:border-amber-500/20 text-slate-800 dark:text-slate-200"
                 }`}
               >
                 {item.isComplete ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
                 ) : (
-                  <AlertCircle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                 )}
                 <div className="space-y-0.5">
-                  <span className={`font-medium ${item.isComplete ? "text-slate-300" : "text-white font-semibold"}`}>
+                  <span className={`font-medium ${item.isComplete ? "text-slate-700 dark:text-slate-300" : "text-slate-900 dark:text-white font-semibold"}`}>
                     {item.label}
                   </span>
                   {!item.isComplete && item.tip && (
-                    <p className="text-[11px] text-amber-300/80 leading-tight">
+                    <p className="text-[11px] text-amber-700 dark:text-amber-300/80 leading-tight">
                       {item.tip}
                     </p>
                   )}

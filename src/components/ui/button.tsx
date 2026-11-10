@@ -22,7 +22,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      "relative inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#090d16] disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]";
+      "relative inline-flex items-center justify-center font-medium rounded-xl cursor-pointer transition-all duration-150 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#090d16] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none active:scale-[0.985] active:translate-y-[0.5px]";
 
     const sizeStyles = {
       sm: "text-xs px-3.5 py-1.5 gap-1.5",
@@ -32,17 +32,17 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variantStyles = {
       primary:
-        "bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white shadow-lg shadow-brand-500/25 border border-brand-400/30 focus:ring-brand-500",
+        "bg-gradient-to-b from-brand-500 to-brand-600 hover:from-brand-400 hover:to-brand-500 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.22),0_4px_16px_-2px_rgba(99,102,241,0.4)] border border-brand-400/40",
       secondary:
-        "bg-slate-800/90 hover:bg-slate-700/90 text-slate-100 border border-slate-700/80 shadow-sm focus:ring-slate-400",
+        "bg-white hover:bg-slate-100 dark:bg-slate-900/90 dark:hover:bg-slate-800/90 text-slate-800 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white border border-slate-300 dark:border-slate-700/80 hover:border-slate-400 dark:hover:border-slate-600/90 shadow-sm dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_2px_8px_-2px_rgba(0,0,0,0.5)]",
       outline:
-        "border border-slate-700/80 hover:border-slate-600 bg-transparent hover:bg-slate-800/50 text-slate-200 focus:ring-slate-500",
+        "border border-slate-300 dark:border-slate-700/80 hover:border-slate-400 dark:hover:border-slate-500/80 bg-white hover:bg-slate-50 dark:bg-transparent dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white shadow-sm",
       ghost:
-        "bg-transparent hover:bg-slate-800/60 text-slate-300 hover:text-white focus:ring-slate-500",
+        "bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white",
       proof:
-        "bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white shadow-lg shadow-emerald-500/20 border border-emerald-400/30 focus:ring-emerald-500",
+        "bg-gradient-to-b from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.25),0_4px_16px_-2px_rgba(16,185,129,0.35)] border border-emerald-400/40",
       danger:
-        "bg-rose-600 hover:bg-rose-500 text-white border border-rose-400/30 focus:ring-rose-500",
+        "bg-gradient-to-b from-rose-500 to-rose-600 hover:from-rose-400 hover:to-rose-500 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2),0_4px_16px_-2px_rgba(244,63,94,0.35)] border border-rose-400/30",
     };
 
     return (

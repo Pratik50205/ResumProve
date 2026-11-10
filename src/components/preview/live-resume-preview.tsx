@@ -40,7 +40,7 @@ export const LiveResumePreview = forwardRef<HTMLDivElement, LiveResumePreviewPro
             transform: `scale(${zoom / 100})`,
             transformOrigin: "top center",
           }}
-          className="w-[210mm] min-h-[297mm] bg-white text-slate-900 shadow-2xl p-[18mm] sm:p-[20mm] rounded-sm transition-transform duration-150 print:shadow-none print:m-0 print:p-0 print:w-full print:transform-none select-text"
+          className="w-[210mm] min-h-[297mm] bg-white text-slate-900 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.06)] ring-1 ring-slate-200/80 p-[18mm] sm:p-[20mm] rounded-sm transition-transform duration-150 print:shadow-none print:ring-0 print:m-0 print:p-0 print:w-full print:transform-none select-text"
         >
           {/* Header Area */}
           <header className="border-b pb-4 mb-4" style={{ borderColor: `${primaryColor}30` }}>

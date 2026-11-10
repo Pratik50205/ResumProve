@@ -101,7 +101,7 @@ export function ScoreRing({
             stroke="currentColor"
             strokeWidth={currentSize.stroke}
             fill="transparent"
-            className="text-slate-800/80"
+            className="text-slate-200 dark:text-slate-800/80"
           />
 
           {/* Animated score circle */}
@@ -124,15 +124,15 @@ export function ScoreRing({
         </svg>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className={cn("font-display tracking-tight text-white", currentSize.text)}>
+          <span className={cn("font-display tracking-tight text-slate-900 dark:text-white", currentSize.text)}>
             {score}
           </span>
-          <span className="text-[10px] uppercase font-semibold text-slate-400 -mt-0.5">/100</span>
+          <span className="text-[10px] uppercase font-semibold text-slate-500 dark:text-slate-400 -mt-0.5">/100</span>
         </div>
       </div>
 
       {label && (
-        <span className={cn("font-medium text-slate-200 mt-2 font-display", currentSize.labelSize)}>
+        <span className={cn("font-medium text-slate-700 dark:text-slate-200 mt-2 font-display", currentSize.labelSize)}>
           {label}
         </span>
       )}
@@ -144,7 +144,7 @@ export function ScoreRing({
       )}
 
       {sublabel && (
-        <span className="text-[11px] text-slate-400 mt-0.5">
+        <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
           {sublabel}
         </span>
       )}
