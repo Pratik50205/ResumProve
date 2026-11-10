@@ -20,9 +20,13 @@ const GITHUB_REGEX = /(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9_.-]+)\/
 const URL_REGEX = /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&//=]*)/i;
 
 // Date range pattern for experiences & education
-const DATE_RANGE_REGEX = /(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+)?\b(19\d{2}|20\d{2})\b\s*(?:–|-|to)\s*(?:(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+)?\b(19\d{2}|20\d{2})\b|present|current)/i;
+const DATE_RANGE_REGEX = /(?:(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?|\b0?[1-9]\b|\b1[0-2]\b)[\/\s.-]*)?\b(19\d{2}|20\d{2})\b\s*(?:–|—|-|to|until)\s*(?:(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?|\b0?[1-9]\b|\b1[0-2]\b)[\/\s.-]*)?(?:\b(19\d{2}|20\d{2})\b|present|current|now|ongoing)/i;
 const SINGLE_YEAR_REGEX = /\b(19\d{2}|20\d{2})\b/;
 const GPA_REGEX = /\b(?:gpa|cgpa)[:\s]*([0-4]\.\d{1,2}(?:\s*\/\s*4(?:\.0)?)?|[0-9]\.\d{1,2}\s*\/\s*10)\b/i;
+
+// Bullet & Action Verb detection
+const BULLET_PREFIX_REGEX = /^[•▪▫‣⁃➢➔✔\u2022\u25E6\u2023\u25AA\u25AB\-*+–—]\s*|^[0-9]+[.)]\s*/;
+const ACTION_VERB_REGEX = /^(built|developed|designed|led|engineered|created|implemented|architected|optimized|maintained|collaborated|resolved|automated|delivered|managed|spearheaded|improved|trained|deployed|analyzed|established|directed|scaled|integrated|achieved|configured|orchestrated|headed|authored|researched|streamlined|formulated)\b/i;
 
 export function extractPersonalDetails(headerLines: string[], allText: string): PersonalDetails {
   const textBlob = [...headerLines, allText.slice(0, 1500)].join(" ");
@@ -31,9 +35,10 @@ export function extractPersonalDetails(headerLines: string[], allText: string): 
   const emailMatch = textBlob.match(EMAIL_REGEX);
   const email = emailMatch ? emailMatch[0].trim() : "";
 
-  // 2. Phone
-  const phoneMatch = textBlob.match(PHONE_REGEX);
-  const phone = phoneMatch ? phoneMatch[0].trim() : "";
+  // 2. Phone (filter out dates like 2020-2024)
+  const phoneMatches = textBlob.match(new RegExp(PHONE_REGEX, "g")) || [];
+  const validPhone = phoneMatches.find((p) => !/^(19|20)\d{2}[-–](19|20)\d{2}$/.test(p.trim())) || "";
+  const phone = validPhone.trim();
 
   // 3. LinkedIn
   const linkedinMatch = textBlob.match(LINKEDIN_REGEX);
@@ -53,47 +58,69 @@ export function extractPersonalDetails(headerLines: string[], allText: string): 
     (u) => !u.includes("linkedin.com") && !u.includes("github.com") && !u.includes("mailto:")
   ) || "";
 
-  // 6. Name Heuristic: Examine top 3 lines
+  // 6. Name & Title Heuristic
+  // If headerLines is empty, fall back to the first 8 lines of the full text
+  const candidateLines = headerLines.length > 0
+    ? headerLines
+    : allText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).slice(0, 8);
+
   let fullName = "";
   let title = "";
 
-  for (let i = 0; i < Math.min(headerLines.length, 5); i++) {
-    const rawLine = headerLines[i].trim();
+  for (let i = 0; i < Math.min(candidateLines.length, 6); i++) {
+    const rawLine = candidateLines[i].trim();
     if (!rawLine) continue;
 
-    // Skip lines that look like emails, URLs, or pure numbers
+    // Skip lines that look like emails, URLs, pure numbers, or resume boilerplate
     if (
       EMAIL_REGEX.test(rawLine) ||
       rawLine.includes("@") ||
       rawLine.includes("http") ||
       PHONE_REGEX.test(rawLine) ||
-      rawLine.length > 50
+      /^(curriculum\s+vitae|resume|cv)$/i.test(rawLine) ||
+      rawLine.length > 45
     ) {
       continue;
     }
 
     // A valid name is usually 2 to 4 words, predominantly alphabetic
     const words = rawLine.split(/\s+/).filter(Boolean);
-    if (!fullName && words.length >= 2 && words.length <= 4 && !/engineer|developer|analyst|manager/i.test(rawLine)) {
+    const hasJobWord = /engineer|developer|analyst|manager|specialist|architect|designer|scientist|student/i.test(rawLine);
+
+    if (!fullName && words.length >= 2 && words.length <= 4 && !hasJobWord) {
       fullName = rawLine.replace(/[,|•]/g, "").trim();
       continue;
     }
 
     // If we have a name, look for title in following line
     if (fullName && !title && words.length <= 6) {
-      if (/engineer|developer|designer|architect|lead|specialist|scientist|consultant|manager|intern/i.test(rawLine)) {
+      if (/engineer|developer|designer|architect|lead|specialist|scientist|consultant|manager|intern|full-stack|frontend|backend/i.test(rawLine)) {
         title = rawLine.replace(/[,|•]/g, "").trim();
         break;
       }
     }
   }
 
-  // 7. Location Heuristic (Look for City, State / Country in header)
+  // 7. Location Heuristic (Look for City, State / Country in header, rejecting tech terms)
   let location = "";
-  for (const line of headerLines) {
-    const locMatch = line.match(/\b([A-Z][a-zA-Z\s.-]+),\s*([A-Z]{2}|[A-Z][a-zA-Z\s]+)\b/);
-    if (locMatch && !locMatch[0].includes("University") && !locMatch[0].includes("College")) {
-      location = locMatch[0].trim();
+  const TECH_EXCLUSIONS = /\b(aws|azure|gcp|kubernetes|docker|python|java|react|node|c\+\+|sql|nosql|html|css|linux|git|rest|api|graphql|ci\/cd|devops|agile|scrum|data|cloud|web|mobile|architect)\b/i;
+
+  for (const line of candidateLines) {
+    if (line.toLowerCase().includes("skill") || line.toLowerCase().includes("experience") || line.toLowerCase().includes("technologies")) {
+      continue;
+    }
+
+    // Pattern A: City, State Abbr (e.g. "San Francisco, CA", "Austin, TX")
+    const stateMatch = line.match(/\b([A-Z][a-zA-Z\s.-]+),\s*([A-Z]{2})\b/);
+    if (stateMatch && !TECH_EXCLUSIONS.test(stateMatch[0]) && !stateMatch[0].includes("University")) {
+      location = stateMatch[0].trim();
+      break;
+    }
+
+    // Pattern B: City, Country (e.g. "Bengaluru, India", "Toronto, Canada", "London, UK")
+    const countryMatch = line.match(/\b([A-Z][a-zA-Z\s.-]+),\s*(USA|United States|India|Canada|UK|United Kingdom|Germany|France|Singapore|Australia|UAE|Netherlands|Japan)\b/i);
+    if (countryMatch && !TECH_EXCLUSIONS.test(countryMatch[0]) && !countryMatch[0].includes("University")) {
+      location = countryMatch[0].trim();
       break;
     }
   }
@@ -145,7 +172,9 @@ export function extractExperience(lines: string[]): Experience[] {
     if (!line) continue;
 
     const dateMatch = line.match(DATE_RANGE_REGEX);
-    const isBullet = /^[•\-*+]\s+|^[0-9]+\.\s+/.test(line);
+    const isExplicitBullet = BULLET_PREFIX_REGEX.test(line);
+    const isVerbBullet = ACTION_VERB_REGEX.test(line) && line.length > 20;
+    const isBullet = isExplicitBullet || isVerbBullet;
 
     // If line has dates or title-like company line, start a new experience entry
     if (dateMatch && !isBullet) {
@@ -157,33 +186,65 @@ export function extractExperience(lines: string[]): Experience[] {
       const isCurrent = /present|current/i.test(endDate);
 
       // Remaining text on line or previous line might be title / company
-      const nonDateText = line.replace(dateMatch[0], "").replace(/[|•()]/g, " ").trim();
       let title = "";
       let company = "";
       let location = "";
 
-      // Check if previous line had title & company (e.g. "Staff AI Engineer - Anthropic Labs")
-      if (i > 0 && !lines[i - 1].startsWith("•") && !lines[i - 1].startsWith("-")) {
+      // 1. Check if the line itself contains delimiters (e.g. "Cloud Engineer at Google 2020 - Present")
+      const rawNonDate = line.replace(dateMatch[0], "").trim();
+      
+      if (rawNonDate.includes(" at ")) {
+        const parts = rawNonDate.split(/\s+at\s+/i);
+        title = parts[0]?.trim() || "";
+        company = parts[1]?.trim() || "";
+      } else if (rawNonDate.includes(" | ")) {
+        const parts = rawNonDate.split(/\s*\|\s*/).map((s) => s.trim()).filter(Boolean);
+        title = parts[0] || "";
+        company = parts[1] || "";
+        if (parts[2]) location = parts[2];
+      } else if (rawNonDate.includes(" - ")) {
+        const parts = rawNonDate.split(/\s+-\s+/).map((s) => s.trim()).filter(Boolean);
+        title = parts[0] || "";
+        company = parts[1] || "";
+      } else if (rawNonDate.includes(" – ")) {
+        const parts = rawNonDate.split(/\s+–\s+/).map((s) => s.trim()).filter(Boolean);
+        title = parts[0] || "";
+        company = parts[1] || "";
+      } else if (rawNonDate.includes(", ") && !rawNonDate.includes(" at ")) {
+        const parts = rawNonDate.split(/,\s*/).map((s) => s.trim()).filter(Boolean);
+        title = parts[0] || "";
+        company = parts[1] || "";
+      } else if (rawNonDate) {
+        title = rawNonDate.replace(/[|•()]/g, " ").trim();
+      }
+
+      // 2. If title or company wasn't found on the date line, check previous line
+      if ((!title || !company) && i > 0 && !BULLET_PREFIX_REGEX.test(lines[i - 1])) {
         const prevLine = lines[i - 1].trim();
         if (prevLine.includes(" at ")) {
-          const parts = prevLine.split(" at ");
-          title = parts[0].trim();
-          company = parts[1].trim();
-        } else if (prevLine.includes(" - ") || prevLine.includes(" | ")) {
-          const parts = prevLine.split(/ - | \| /);
-          title = parts[0].trim();
-          company = parts[1]?.trim() || "";
-        } else {
+          const parts = prevLine.split(/\s+at\s+/i);
+          if (!title) title = parts[0].trim();
+          if (!company) company = parts[1].trim();
+        } else if (prevLine.includes(" | ")) {
+          const parts = prevLine.split(/\s*\|\s*/).map((s) => s.trim());
+          if (!title) title = parts[0];
+          if (!company) company = parts[1] || "";
+          if (!location && parts[2]) location = parts[2];
+        } else if (prevLine.includes(" - ")) {
+          const parts = prevLine.split(/\s+-\s+/).map((s) => s.trim());
+          if (!title) title = parts[0];
+          if (!company) company = parts[1] || "";
+        } else if (!company) {
           company = prevLine;
         }
       }
 
-      if (nonDateText) {
-        if (!location && /,|\b[A-Z]{2}\b/.test(nonDateText)) {
-          location = nonDateText;
-        } else if (!title) {
-          title = nonDateText;
-        }
+      // Sanity swap: If company looks like a job title and title does not, swap them
+      const TITLE_KEYWORDS = /engineer|developer|designer|architect|lead|manager|analyst|specialist|consultant|scientist|intern|director|head/i;
+      if (TITLE_KEYWORDS.test(company) && !TITLE_KEYWORDS.test(title)) {
+        const tmp = title;
+        title = company;
+        company = tmp;
       }
 
       currentExp = {
@@ -198,8 +259,11 @@ export function extractExperience(lines: string[]): Experience[] {
     }
 
     if (isBullet) {
-      const cleanBullet = line.replace(/^[•\-*+]\s+|^[0-9]+\.\s+/, "").trim();
+      const cleanBullet = line.replace(BULLET_PREFIX_REGEX, "").trim();
       if (cleanBullet) currentBullets.push(cleanBullet);
+    } else if (currentExp && currentBullets.length > 0 && line.length > 0 && !dateMatch) {
+      // Multi-line bullet continuation
+      currentBullets[currentBullets.length - 1] += " " + line;
     } else if (currentExp && currentBullets.length === 0) {
       // Line might be title or location under company
       if (!currentExp.company || currentExp.company === "Organization") {
@@ -236,7 +300,9 @@ export function extractProjects(lines: string[]): Project[] {
   };
 
   for (const line of lines) {
-    const isBullet = /^[•\-*+]\s+|^[0-9]+\.\s+/.test(line);
+    const isExplicitBullet = BULLET_PREFIX_REGEX.test(line);
+    const isVerbBullet = ACTION_VERB_REGEX.test(line) && line.length > 20;
+    const isBullet = isExplicitBullet || isVerbBullet;
 
     if (!isBullet && line.length < 80) {
       // Possible project heading line
@@ -267,8 +333,11 @@ export function extractProjects(lines: string[]): Project[] {
     }
 
     if (isBullet && currentProj) {
-      const clean = line.replace(/^[•\-*+]\s+|^[0-9]+\.\s+/, "").trim();
+      const clean = line.replace(BULLET_PREFIX_REGEX, "").trim();
       if (clean) currentBullets.push(clean);
+    } else if (currentProj && currentBullets.length > 0 && line.length > 0) {
+      // Multi-line project bullet continuation
+      currentBullets[currentBullets.length - 1] += " " + line;
     }
   }
 
@@ -412,6 +481,30 @@ export function extractEducation(lines: string[]): Education[] {
           gpa: currentEdu.gpa,
         });
         currentEdu = null;
+      }
+
+      // If line contains BOTH degree and institution (e.g. "Bachelor of Science in CS - Stanford University")
+      if (isDegree && isInstitution) {
+        let degreePart = "";
+        let instPart = "";
+        const parts = line.split(/\s*[-|–—]\s*|\s+at\s+|\s+from\s+|,\s*/).map((p) => p.trim()).filter(Boolean);
+        for (const p of parts) {
+          if (/bachelor|master|phd|doctor|b\.s|m\.s|b\.tech|m\.tech|associate|degree/i.test(p)) {
+            if (!degreePart) degreePart = p;
+          } else if (/university|institute|college|school|academy/i.test(p)) {
+            if (!instPart) instPart = p;
+          }
+        }
+
+        currentEdu = {
+          institution: instPart || "University",
+          degree: degreePart || "Bachelor of Science",
+          fieldOfStudy: extractedField || "Computer Science",
+          startDate: dateMatch ? dateMatch[0].split(/–|-/)[0]?.trim() || "2019" : "2019",
+          endDate: dateMatch ? dateMatch[0].split(/–|-/)[1]?.trim() || "2023" : "2023",
+          gpa: gpaMatch ? gpaMatch[1] : undefined,
+        };
+        continue;
       }
 
       currentEdu = {

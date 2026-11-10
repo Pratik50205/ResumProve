@@ -23,32 +23,47 @@ export interface DetectedSection {
 const SECTION_PATTERNS: { type: SectionType; regex: RegExp }[] = [
   {
     type: "summary",
-    regex: /^(professional|executive|career)?\s*(summary|profile|objective|about\s*(me)?|overview)$/i,
+    regex: /^(professional|executive|career|personal|candidate)?\s*(summary|profile|objective|statement|about\s*(me)?|overview|biography)$/i,
   },
   {
     type: "experience",
-    regex: /^(work|professional|employment|career|relevant)?\s*(experience|history|background|employment)$/i,
+    regex: /^(work|professional|career|relevant|employment|industry)?\s*(experience|history|background|employment|positions?\s*held|work)(\s*(&|and)\s*(leadership|contributions|roles))?$/i,
   },
   {
     type: "projects",
-    regex: /^(key|technical|selected|academic|personal|featured)?\s*projects(\s*(&|and)\s*(systems|contributions))?$/i,
+    regex: /^(key|technical|selected|academic|personal|featured|notable|coursework|capstone|hands-on)?\s*projects(\s*(&|and)\s*(systems|contributions|open\s*source|experience))?$/i,
   },
   {
     type: "skills",
-    regex: /^(technical|core|key|domain|relevant)?\s*(skills|proficiencies|competencies|technologies|tools(\s*(&|and)\s*technologies)?)$/i,
+    regex: /^(technical|core|key|domain|relevant|programming|software|it)?\s*(skills|proficiencies|competencies|technologies|tools(\s*(&|and)\s*(technologies|tools|languages|frameworks))?|tech\s*stack|areas\s*of\s*expertise|stack)$/i,
   },
   {
     type: "education",
-    regex: /^(education|academic\s*(background|history|credentials)|degrees?|academics?)$/i,
+    regex: /^(education|academic\s*(background|history|credentials|qualifications)|degrees?|academics?|qualifications|coursework(\s*(&|and)\s*education)?)$/i,
   },
   {
     type: "certifications",
-    regex: /^(certifications?|licenses|credentials|training(\s*(&|and)\s*certifications)?)$/i,
+    regex: /^(certifications?|licenses|credentials|training|certificates|courses|awards(\s*(&|and)\s*(certifications|honors|licenses))?)$/i,
   },
 ];
 
+const INLINE_HEADER_REGEX = /^((?:professional\s+|executive\s+|career\s+|work\s+|technical\s+|key\s+|academic\s+)?(?:summary|profile|objective|statement|experience|history|projects|skills|competencies|technologies|education|certifications))\s*[:–—\-]\s*(.+)$/i;
+
 export function detectSections(rawText: string): DetectedSection[] {
-  const lines = rawText.split(/\r?\n/).map((l) => l.trim());
+  // Preprocess lines: handle inline section headers (e.g. "Skills: React, Node, Python")
+  const initialLines = rawText.split(/\r?\n/).map((l) => l.trim()).filter((l) => l.length > 0);
+  const lines: string[] = [];
+
+  for (const line of initialLines) {
+    const inlineMatch = line.match(INLINE_HEADER_REGEX);
+    if (inlineMatch && inlineMatch[1] && inlineMatch[2]) {
+      lines.push(inlineMatch[1].trim());
+      lines.push(inlineMatch[2].trim());
+    } else {
+      lines.push(line);
+    }
+  }
+
   const detectedMarkers: { index: number; type: SectionType; heading: string }[] = [];
 
   for (let i = 0; i < lines.length; i++) {
@@ -56,9 +71,14 @@ export function detectSections(rawText: string): DetectedSection[] {
     if (!line || line.length > 55) continue; // Section headers are short lines
 
     // Clean punctuation or special characters (e.g. "## Experience", "--- Skills ---", "1. Education")
-    const cleanLine = line
+    let cleanLine = line
       .replace(/^[#*\-•>\s\d.]+|[:|\-—_=]+$/g, "")
       .trim();
+
+    // Handle tracked letters (e.g. "E X P E R I E N C E" -> "EXPERIENCE")
+    if (/^[A-Z](\s[A-Z]){2,}$/.test(cleanLine)) {
+      cleanLine = cleanLine.replace(/\s+/g, "");
+    }
 
     if (!cleanLine) continue;
 
